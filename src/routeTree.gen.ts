@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as EmployerRouteImport } from './routes/employer'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as YouthRouteImport } from './routes/youth'
+import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
+import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployerRoute = EmployerRouteImport.update({
+  id: '/employer',
+  path: '/employer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const YouthRoute = YouthRouteImport.update({
+  id: '/youth',
+  path: '/youth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
+  id: '/opportunities/',
+  path: '/opportunities/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
+  id: '/opportunities/$id',
+  path: '/opportunities/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/employer': typeof EmployerRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/youth': typeof YouthRoute
+  '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/employer': typeof EmployerRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/youth': typeof YouthRoute
+  '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/opportunities': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/employer': typeof EmployerRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/youth': typeof YouthRoute
+  '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/employer'
+    | '/login'
+    | '/register'
+    | '/youth'
+    | '/opportunities/$id'
+    | '/opportunities/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/employer'
+    | '/login'
+    | '/register'
+    | '/youth'
+    | '/opportunities/$id'
+    | '/opportunities'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/employer'
+    | '/login'
+    | '/register'
+    | '/youth'
+    | '/opportunities/$id'
+    | '/opportunities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
+  EmployerRoute: typeof EmployerRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  YouthRoute: typeof YouthRoute
+  OpportunitiesIdRoute: typeof OpportunitiesIdRoute
+  OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employer': {
+      id: '/employer'
+      path: '/employer'
+      fullPath: '/employer'
+      preLoaderRoute: typeof EmployerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/youth': {
+      id: '/youth'
+      path: '/youth'
+      fullPath: '/youth'
+      preLoaderRoute: typeof YouthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities/': {
+      id: '/opportunities/'
+      path: '/opportunities'
+      fullPath: '/opportunities/'
+      preLoaderRoute: typeof OpportunitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities/$id': {
+      id: '/opportunities/$id'
+      path: '/opportunities/$id'
+      fullPath: '/opportunities/$id'
+      preLoaderRoute: typeof OpportunitiesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
+  EmployerRoute: EmployerRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  YouthRoute: YouthRoute,
+  OpportunitiesIdRoute: OpportunitiesIdRoute,
+  OpportunitiesIndexRoute: OpportunitiesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

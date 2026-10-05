@@ -24,7 +24,7 @@ function Employer() {
   const [show, setShow] = useState(false);
   const [done, setDone] = useState(false);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
-  const count = (s: string) => mine.filter((o) => o.status === s).length;
+  const count = (s: string | undefined) => mine.filter((o) => o.status === s).length;
 
   return (
     <>
@@ -33,7 +33,7 @@ function Employer() {
       </PageHeader>
       <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
         <div className="grid grid-cols-3 gap-3">
-          {[["Pending", "pending"], ["Approved", "approved"], ["Rejected", "rejected"]].map(([l, s]) => (
+          {([["Pending", "pending"], ["Approved", "approved"], ["Rejected", "rejected"]] as const).map(([l, s]) => (
             <div key={s} className="card p-4"><p className="text-xs text-muted-foreground">{l}</p><p className="text-3xl font-black">{count(s)}</p></div>
           ))}
         </div>

@@ -4,7 +4,7 @@ export type Role = "youth" | "employer" | "admin";
 export type OppType = "Job" | "Internship" | "Learnership" | "Training";
 export type OppStatus = "pending" | "approved" | "rejected";
 
-export interface User { id: string; name: string; email: string; password: string; role: Role; organisation?: string }
+export interface User { id: string; name: string; email: string; password: string; role: Role; organisation?: string | undefined }
 export interface Profile { userId: string; fullName: string; email: string; location: string; education: string; skills: string; interests: string }
 export interface Opportunity {
   id: string; title: string; organisation: string; type: OppType; location: string; category: string;
@@ -90,7 +90,7 @@ export const actions = {
     update((d) => ({ ...d, sessionId: u.id }));
     return u;
   },
-  register(data: { name: string; email: string; password: string; role: Role; organisation?: string }): User | string {
+  register(data: { name: string; email: string; password: string; role: Role; organisation?: string | undefined }): User | string {
     load();
     if (state.users.some((x) => x.email.toLowerCase() === data.email.trim().toLowerCase())) return "An account with this email already exists.";
     const u: User = { id: uid(), ...data, email: data.email.trim() };

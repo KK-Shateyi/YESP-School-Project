@@ -27,7 +27,7 @@ export function SiteHeader() {
       {user ? (
         <>
           <Link to={dashboardPath(user.role)} className={link} activeProps={active} onClick={() => setOpen(false)}>Dashboard</Link>
-          <span className="text-xs text-ink-foreground/60">{user.name} · {user.role}</span>
+          <span className="text-xs text-ink-foreground/80">{user.name} · {user.role}</span>
           <button onClick={logout} className="btn btn-gold !py-1.5">Logout</button>
         </>
       ) : (
@@ -57,20 +57,20 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:grid-cols-3">
         <div>
           <p className="text-lg font-black">YESP</p>
-          <p className="mt-1 text-sm text-ink-foreground/70">Bridging youth employment through skills development.</p>
+          <p className="mt-1 text-sm text-ink-foreground/80">Bridging youth employment through skills development.</p>
         </div>
         <div className="flex flex-col gap-1 text-sm text-ink-foreground/80">
           <Link to="/opportunities" className="hover:text-primary">Opportunities</Link>
           <Link to="/about" className="hover:text-primary">About</Link>
           <Link to="/register" className="hover:text-primary">Register</Link>
         </div>
-        <div className="text-sm text-ink-foreground/70">
+        <div className="text-sm text-ink-foreground/80">
           <p>Academic functional prototype · South Africa</p>
           <p className="mt-1">All organisations and listings are demonstration data.</p>
           <button onClick={() => { if (confirm("Reset all demo data?")) actions.reset(); }} className="mt-3 text-xs text-primary underline">Reset demo data</button>
         </div>
       </div>
-      <p className="border-t border-ink-foreground/10 py-4 text-center text-xs text-ink-foreground/50">© 2026 YESP – Youth Employment & Skills Portal</p>
+      <p className="border-t border-ink-foreground/10 py-4 text-center text-xs text-ink-foreground/70">© 2026 YESP – Youth Employment & Skills Portal</p>
     </footer>
   );
 }

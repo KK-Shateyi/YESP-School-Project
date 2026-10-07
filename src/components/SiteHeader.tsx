@@ -65,7 +65,7 @@ export function SiteFooter() {
           <Link to="/register" className="hover:text-primary">Register</Link>
         </div>
         <div className="text-sm text-ink-foreground/80">
-          <p>Academic functional prototype · South Africa</p>
+          <p>{"\n"}</p>
           <p className="mt-1">All organisations and listings are demonstration data.</p>
           <button onClick={() => { if (confirm("Reset all demo data?")) actions.reset(); }} className="mt-3 text-xs text-primary underline">Reset demo data</button>
         </div>

@@ -70,7 +70,7 @@ export function SiteFooter() {
           <button onClick={() => { if (confirm("Reset all demo data?")) actions.reset(); }} className="mt-3 text-xs text-primary underline">Reset demo data</button>
         </div>
       </div>
-      <p className="border-t border-ink-foreground/10 py-4 text-center text-xs text-ink-foreground/70">© 2026 YESP – Youth Employment & Skills Portal</p>
+      <p className="border-t border-ink-foreground/10 py-4 text-center text-xs text-ink-foreground/70">© 2026 ILS2B YESP – Youth Employment & Skills Portal</p>
     </footer>
   );
 }

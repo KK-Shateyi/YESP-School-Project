@@ -3,7 +3,7 @@ import { useState } from "react";
 import { PageHeader, RequireRole, StatusBadge, TypeTag } from "@/components/ui-bits";
 import { actions, useDB, type OppStatus } from "@/lib/store";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Admin Dashboard – YESP" },

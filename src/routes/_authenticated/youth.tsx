@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { PageHeader, RequireRole, StatusBadge } from "@/components/ui-bits";
 import { actions, LOCATIONS, useCurrentUser, useDB, type Profile } from "@/lib/store";
 
-export const Route = createFileRoute("/youth")({
+export const Route = createFileRoute("/_authenticated/youth")({
   head: () => ({
     meta: [
       { title: "My Dashboard – YESP Youth" },

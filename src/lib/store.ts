@@ -1,116 +1,56 @@
-import { useSyncExternalStore } from "react";
-
-export type Role = "youth" | "employer" | "admin";
-export type OppType = "Job" | "Internship" | "Learnership" | "Training";
-export type OppStatus = "pending" | "approved" | "rejected";
-
-export interface User { id: string; name: string; email: string; password: string; role: Role; organisation?: string | undefined }
-export interface Profile { userId: string; fullName: string; email: string; location: string; education: string; skills: string; interests: string }
-export interface Opportunity {
-  id: string; title: string; organisation: string; type: OppType; location: string; category: string;
-  description: string; requirements: string; closingDate: string; status: OppStatus; employerId: string; createdAt: string;
-}
-export interface Application { id: string; oppId: string; userId: string; date: string; status: "Submitted" | "Under Review" }
-export interface DB { users: User[]; profiles: Profile[]; opps: Opportunity[]; apps: Application[]; sessionId: string | null }
-
-export const OPP_TYPES: OppType[] = ["Job", "Internship", "Learnership", "Training"];
-export const CATEGORIES = ["ICT", "Data & Analytics", "Digital Skills", "Business & Admin", "Engineering", "Hospitality"];
-export const LOCATIONS = ["Johannesburg", "Gauteng", "Soweto", "Pretoria", "Cape Town", "Durban", "Polokwane", "Remote"];
-
-const today = () => new Date().toISOString().slice(0, 10);
-const uid = () => Math.random().toString(36).slice(2, 10);
-
-function seed(): DB {
-  return {
-    sessionId: null,
-    users: [
-      { id: "admin1", name: "YESP Administrator", email: "admin@yesp.co.za", password: "admin123", role: "admin" },
-      { id: "emp1", name: "Lerato Mokoena", email: "employer@techhub.co.za", password: "employer123", role: "employer", organisation: "TechHub Joburg (Demo)" },
-      { id: "emp2", name: "Sipho Dlamini", email: "skills@ubuntuacademy.co.za", password: "employer123", role: "employer", organisation: "Ubuntu Skills Academy (Demo)" },
-      { id: "youth1", name: "Thabo Nkosi", email: "thabo@demo.co.za", password: "youth123", role: "youth" },
-    ],
-    profiles: [
-      { userId: "youth1", fullName: "Thabo Nkosi", email: "thabo@demo.co.za", location: "Soweto", education: "Matric + N4 IT", skills: "HTML, CSS, Excel", interests: "Web development, IT support" },
-    ],
-    opps: [
-      { id: "o1", title: "IT Support Learnership", organisation: "Ubuntu Skills Academy (Demo)", type: "Learnership", location: "Gauteng", category: "ICT",
-        description: "A 12-month NQF Level 4 learnership combining classroom training with workplace experience in desktop and network support.",
-        requirements: "Matric certificate\nAged 18–35\nUnemployed South African citizen\nBasic computer literacy", closingDate: "2026-11-30", status: "approved", employerId: "emp2", createdAt: "2026-09-01" },
-      { id: "o2", title: "Digital Skills Training Programme", organisation: "Ubuntu Skills Academy (Demo)", type: "Training", location: "Soweto", category: "Digital Skills",
-        description: "Free 8-week programme covering digital literacy, email, Microsoft Office, online safety and CV writing. Stipend for transport provided.",
-        requirements: "Grade 11 or Matric\nLiving in or near Soweto\nCommitment to attend 3 days per week", closingDate: "2026-11-15", status: "approved", employerId: "emp2", createdAt: "2026-09-10" },
-      { id: "o3", title: "Data Analytics Internship", organisation: "TechHub Joburg (Demo)", type: "Internship", location: "Johannesburg", category: "Data & Analytics",
-        description: "6-month paid internship working with our analytics team on dashboards, reporting and data cleaning using Excel, SQL and Power BI.",
-        requirements: "Diploma or degree in Statistics, IT or related\nStrong Excel skills\nAnalytical mindset", closingDate: "2026-12-05", status: "approved", employerId: "emp1", createdAt: "2026-09-15" },
-      { id: "o4", title: "Junior Admin Clerk", organisation: "Mzansi Logistics (Demo)", type: "Job", location: "Pretoria", category: "Business & Admin",
-        description: "Entry-level permanent role supporting the operations office with filing, data capture and customer queries.",
-        requirements: "Matric\nComputer literate\nGood communication in English", closingDate: "2026-11-20", status: "approved", employerId: "emp1", createdAt: "2026-09-20" },
-      { id: "o5", title: "Hospitality Learnership", organisation: "Coastal Hotels Group (Demo)", type: "Learnership", location: "Durban", category: "Hospitality",
-        description: "Front-of-house and food service learnership in partnership with a leading hotel group.",
-        requirements: "Matric\nAged 18–30\nFriendly and customer-focused", closingDate: "2026-12-10", status: "pending", employerId: "emp2", createdAt: "2026-10-01" },
-    ],
-    apps: [],
-  };
-}
-
-const KEY = "yesp-demo-db-v1";
-let state: DB = seed();
-let loaded = false;
+import { useSyncExternalStore } from 'react';
+import { queryOptions } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { getPublicOpportunities } from './opportunities.functions';
+import type { Database } from '@/integrations/supabase/types';
+export type Role = 'youth' | 'employer' | 'admin';
+export type OppType = 'Job' | 'Internship' | 'Learnership' | 'Training';
+export type OppStatus = 'pending' | 'approved' | 'rejected';
+export interface User { id: string; name: string; email: string; role: Role; organisation?: string | undefined }
+export interface Profile { userId: string; fullName: string; email: string; location: string; education: string; skills: string; interests: string; experience?: string | undefined }
+export interface Opportunity { id: string; title: string; organisation: string; type: OppType; location: string; category: string; description: string; requirements: string; closingDate: string; status: OppStatus; employerId: string; createdAt: string; skills?: string | undefined; qualifications?: string | undefined; instructions?: string | undefined; rejectionReason?: string | undefined }
+export interface Application { id: string; oppId: string; userId: string; date: string; status: 'Submitted' | 'Under Review' }
+export interface DB { users: User[]; profiles: Profile[]; opps: Opportunity[]; apps: Application[]; sessionId: string | null; loading: boolean; error: string }
+export const OPP_TYPES: OppType[] = ['Job','Internship','Learnership','Training'];
+export const CATEGORIES = ['ICT','Data & Analytics','Digital Skills','Business & Admin','Engineering','Hospitality'];
+export const LOCATIONS = ['Johannesburg','Gauteng','Soweto','Pretoria','Cape Town','Durban','Polokwane','Remote'];
+type OppRow = Database['public']['Tables']['opportunities']['Row'];
+export function mapOpportunity(o: OppRow): Opportunity { return { ...o, type: o.type as OppType, status: o.status as OppStatus, closingDate: o.closing_date, employerId: o.employer_id ?? '', createdAt: o.created_at.slice(0,10), rejectionReason: o.rejection_reason }; }
+export const publicOpportunitiesOptions = queryOptions({ queryKey: ['public-opportunities'], queryFn: async () => (await getPublicOpportunities()).map(mapOpportunity) });
+const empty: DB = {users:[],profiles:[],opps:[],apps:[],sessionId:null,loading:true,error:''};
+let state: DB = empty;
+let revision = 0;
 const listeners = new Set<() => void>();
-
-function load() {
-  if (loaded || typeof window === "undefined") return;
-  loaded = true;
-  try { const raw = localStorage.getItem(KEY); if (raw) state = JSON.parse(raw); } catch { /* ignore */ }
+function emit(next: Partial<DB>) { state = {...state,...next}; listeners.forEach(l=>l()); }
+export function useDB() { return useSyncExternalStore(l=>{listeners.add(l);return ()=>listeners.delete(l);},()=>state,()=>empty); }
+export function useCurrentUser() { const db=useDB();return db.users.find(u=>u.id===db.sessionId) ?? null; }
+export async function refreshData() {
+  const current = ++revision;
+  try {
+    const {data:{user},error:authError}=await supabase.auth.getUser();
+    if(authError && user) throw authError;
+    if (!user) {
+      const {data,error}=await supabase.from('opportunities').select('*').eq('status','approved').order('created_at',{ascending:false});
+      if(error) throw error;
+      if(current===revision) emit({users:[],profiles:[],apps:[],sessionId:null,opps:(data??[]).map(mapOpportunity),loading:false,error:''});
+      return;
+    }
+    const [p,r,o,a]=await Promise.all([supabase.from('profiles').select('*').eq('id',user.id).single(),supabase.from('user_roles').select('role').eq('user_id',user.id).single(),supabase.from('opportunities').select('*').order('created_at',{ascending:false}),supabase.from('applications').select('*')]);
+    if(p.error||r.error||o.error||a.error) throw p.error||r.error||o.error||a.error;
+    if(current!==revision) return;
+    const profile=p.data;
+    emit({users:[{id:user.id,name:profile.full_name,email:user.email??'',role:r.data.role,organisation:profile.organisation}],profiles:[{userId:user.id,fullName:profile.full_name,email:profile.email,location:profile.location,education:profile.education,skills:profile.skills,interests:profile.interests,experience:profile.experience}],sessionId:user.id,opps:(o.data??[]).map(mapOpportunity),apps:(a.data??[]).map(x=>({id:x.id,oppId:x.opp_id,userId:x.user_id,date:x.date,status:x.status as Application['status']})),loading:false,error:''});
+  } catch { if(current===revision) emit({loading:false,error:'Unable to load your account data. Please try again.'}); }
 }
-function emit() {
-  if (typeof window !== "undefined") localStorage.setItem(KEY, JSON.stringify(state));
-  listeners.forEach((l) => l());
-}
-export function update(fn: (db: DB) => DB) { load(); state = fn(state); emit(); }
-
-const serverSnap = seed();
-export function useDB(): DB {
-  return useSyncExternalStore(
-    (l) => { listeners.add(l); return () => listeners.delete(l); },
-    () => { load(); return state; },
-    () => serverSnap,
-  );
-}
-export function useCurrentUser(): User | null {
-  const db = useDB();
-  return db.users.find((u) => u.id === db.sessionId) ?? null;
-}
-
+export function clearAccount() { revision++;emit({...empty,opps:state.opps.filter(o=>o.status==='approved'),loading:false}); }
 export const actions = {
-  login(email: string, password: string): User | string {
-    load();
-    const u = state.users.find((x) => x.email.toLowerCase() === email.trim().toLowerCase() && x.password === password);
-    if (!u) return "Incorrect email or password.";
-    update((d) => ({ ...d, sessionId: u.id }));
-    return u;
-  },
-  register(data: { name: string; email: string; password: string; role: Role; organisation?: string | undefined }): User | string {
-    load();
-    if (state.users.some((x) => x.email.toLowerCase() === data.email.trim().toLowerCase())) return "An account with this email already exists.";
-    const u: User = { id: uid(), ...data, email: data.email.trim() };
-    update((d) => ({
-      ...d, users: [...d.users, u], sessionId: u.id,
-      profiles: u.role === "youth" ? [...d.profiles, { userId: u.id, fullName: u.name, email: u.email, location: "", education: "", skills: "", interests: "" }] : d.profiles,
-    }));
-    return u;
-  },
-  logout() { update((d) => ({ ...d, sessionId: null })); },
-  saveProfile(p: Profile) { update((d) => ({ ...d, profiles: [...d.profiles.filter((x) => x.userId !== p.userId), p] })); },
-  createOpp(o: Omit<Opportunity, "id" | "status" | "createdAt">) {
-    update((d) => ({ ...d, opps: [{ ...o, id: uid(), status: "pending", createdAt: today() }, ...d.opps] }));
-  },
-  setStatus(id: string, status: OppStatus) { update((d) => ({ ...d, opps: d.opps.map((o) => (o.id === id ? { ...o, status } : o)) })); },
-  apply(oppId: string, userId: string) {
-    update((d) => d.apps.some((a) => a.oppId === oppId && a.userId === userId) ? d
-      : ({ ...d, apps: [{ id: uid(), oppId, userId, date: today(), status: "Submitted" }, ...d.apps] }));
-  },
-  reset() { const s = seed(); update(() => s); },
+ async login(email:string,password:string):Promise<User|string> { const {error}=await supabase.auth.signInWithPassword({email:email.trim(),password});if(error)return 'Unable to sign in. Check your email and password, and confirm your email if needed.';await refreshData();return state.users[0]??'Your account could not be loaded. Please try again.'; },
+ async register(data:{name:string;email:string;password:string;role:Role;organisation?:string|undefined}):Promise<string|null> { const {error}=await supabase.auth.signUp({email:data.email.trim(),password:data.password,options:{emailRedirectTo:window.location.origin,data:{name:data.name.trim(),role:data.role==='employer'?'employer':'youth',organisation:data.organisation??''}}});return error?'Registration could not be completed. Check your details or try signing in.':null; },
+ async logout(){clearAccount();await supabase.auth.signOut();},
+ async saveProfile(p:Profile){const{error}=await supabase.from('profiles').update({full_name:p.fullName.trim(),email:p.email.trim(),location:p.location,education:p.education.trim(),skills:p.skills.trim(),interests:p.interests.trim(),experience:p.experience??''}).eq('id',p.userId);if(error)throw new Error('Profile could not be saved. Please try again.');await refreshData();},
+ async createOpp(o:Omit<Opportunity,'id'|'status'|'createdAt'>){const{error}=await supabase.from('opportunities').insert({title:o.title.trim(),organisation:o.organisation.trim(),type:o.type,location:o.location,category:o.category,description:o.description.trim(),requirements:o.requirements.trim(),closing_date:o.closingDate,employer_id:o.employerId,skills:o.skills??'',qualifications:o.qualifications??'',instructions:o.instructions??''});if(error)throw new Error(error.code==='23505'?'This opportunity has already been submitted.':'Unable to submit this opportunity. Please check your details.');await refreshData();},
+ async setStatus(id:string,status:OppStatus,reason=''){const{error}=await supabase.rpc('review_opportunity',{_id:id,_status:status,_reason:reason});if(error)throw new Error(error.message);await refreshData();},
+ async apply(oppId:string,userId:string){const{error}=await supabase.from('applications').insert({opp_id:oppId,user_id:userId});if(error&&error.code!=='23505')throw new Error('Application could not be submitted. The listing may have closed. Please try again.');await refreshData();},
+ reset(){ /* Legacy browser data deliberately retained; never delete Cloud records. */ },
 };
-
-export function dashboardPath(role: Role) { return role === "youth" ? "/youth" : role === "employer" ? "/employer" : "/admin"; }
+export function dashboardPath(role:Role){return role==='youth'?'/youth':role==='employer'?'/employer':'/admin';}

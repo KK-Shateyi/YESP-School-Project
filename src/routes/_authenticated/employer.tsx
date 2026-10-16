@@ -3,7 +3,7 @@ import { useState } from "react";
 import { PageHeader, RequireRole, StatusBadge, TypeTag } from "@/components/ui-bits";
 import { actions, CATEGORIES, LOCATIONS, OPP_TYPES, useCurrentUser, useDB, type OppType } from "@/lib/store";
 
-export const Route = createFileRoute("/employer")({
+export const Route = createFileRoute("/_authenticated/employer")({
   head: () => ({
     meta: [
       { title: "Employer Dashboard – YESP" },

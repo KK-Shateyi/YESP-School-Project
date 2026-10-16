@@ -25,9 +25,9 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const r = actions.login(email, password);
+    const r = await actions.login(email, password);
     if (typeof r === "string") return setError(r);
     navigate({ to: dashboardPath(r.role) });
   };

@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as EmployerRouteImport } from './routes/employer'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as YouthRouteImport } from './routes/youth'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedEmployerRouteImport } from './routes/_authenticated/employer'
+import { Route as AuthenticatedYouthRouteImport } from './routes/_authenticated/youth'
 import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
 import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
 
@@ -29,16 +29,6 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmployerRoute = EmployerRouteImport.update({
-  id: '/employer',
-  path: '/employer',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -49,8 +39,18 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const YouthRoute = YouthRouteImport.update({
-  id: '/youth',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/_authenticated/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEmployerRoute = AuthenticatedEmployerRouteImport.update({
+  id: '/_authenticated/employer',
+  path: '/employer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedYouthRoute = AuthenticatedYouthRouteImport.update({
+  id: '/_authenticated/youth',
   path: '/youth',
   getParentRoute: () => rootRouteImport,
 } as any)
@@ -68,22 +68,22 @@ const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
-  '/employer': typeof EmployerRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/youth': typeof YouthRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/employer': typeof AuthenticatedEmployerRoute
+  '/youth': typeof AuthenticatedYouthRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
-  '/employer': typeof EmployerRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/youth': typeof YouthRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/employer': typeof AuthenticatedEmployerRoute
+  '/youth': typeof AuthenticatedYouthRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/opportunities': typeof OpportunitiesIndexRoute
 }
@@ -91,11 +91,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
-  '/employer': typeof EmployerRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/youth': typeof YouthRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/employer': typeof AuthenticatedEmployerRoute
+  '/_authenticated/youth': typeof AuthenticatedYouthRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
 }
@@ -104,10 +104,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/admin'
-    | '/employer'
     | '/login'
     | '/register'
+    | '/admin'
+    | '/employer'
     | '/youth'
     | '/opportunities/$id'
     | '/opportunities/'
@@ -115,10 +115,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/admin'
-    | '/employer'
     | '/login'
     | '/register'
+    | '/admin'
+    | '/employer'
     | '/youth'
     | '/opportunities/$id'
     | '/opportunities'
@@ -126,11 +126,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/admin'
-    | '/employer'
     | '/login'
     | '/register'
-    | '/youth'
+    | '/_authenticated/admin'
+    | '/_authenticated/employer'
+    | '/_authenticated/youth'
     | '/opportunities/$id'
     | '/opportunities/'
   fileRoutesById: FileRoutesById
@@ -138,11 +138,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
-  EmployerRoute: typeof EmployerRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
-  YouthRoute: typeof YouthRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedEmployerRoute: typeof AuthenticatedEmployerRoute
+  AuthenticatedYouthRoute: typeof AuthenticatedYouthRoute
   OpportunitiesIdRoute: typeof OpportunitiesIdRoute
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
 }
@@ -163,20 +163,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/employer': {
-      id: '/employer'
-      path: '/employer'
-      fullPath: '/employer'
-      preLoaderRoute: typeof EmployerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -191,11 +177,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/youth': {
-      id: '/youth'
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/employer': {
+      id: '/_authenticated/employer'
+      path: '/employer'
+      fullPath: '/employer'
+      preLoaderRoute: typeof AuthenticatedEmployerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/youth': {
+      id: '/_authenticated/youth'
       path: '/youth'
       fullPath: '/youth'
-      preLoaderRoute: typeof YouthRouteImport
+      preLoaderRoute: typeof AuthenticatedYouthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/opportunities/': {
@@ -218,11 +218,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
-  EmployerRoute: EmployerRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-  YouthRoute: YouthRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedEmployerRoute: AuthenticatedEmployerRoute,
+  AuthenticatedYouthRoute: AuthenticatedYouthRoute,
   OpportunitiesIdRoute: OpportunitiesIdRoute,
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
 }

@@ -1,6 +1,8 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
-import { useCurrentUser, type OppStatus, type Opportunity, type Role } from "@/lib/store";
+import { Link } from "@tanstack/react-router";
+import { type ReactNode } from "react";
+import { refreshData, useDB, useCurrentUser, type OppStatus, type Opportunity, type Role } from "@/lib/store";
+import { Button } from '@/components/ui/button';
+import { MapPin, CalendarDays, ArrowRight } from 'lucide-react';
 
 export function StatusBadge({ status }: { status: OppStatus | string }) {
   const map: Record<string, [string, string]> = {
@@ -19,24 +21,23 @@ export function TypeTag({ type }: { type: string }) {
 
 export function OppCard({ o }: { o: Opportunity }) {
   return (
-    <Link to="/opportunities/$id" params={{ id: o.id }} className="card block p-5 transition hover:border-primary">
+    <article className="card flex flex-col p-5 transition hover:border-primary">
       <div className="mb-2 flex items-center gap-2"><TypeTag type={o.type} /><span className="text-xs text-muted-foreground">{o.category}</span></div>
       <h3 className="text-lg font-bold leading-snug">{o.title}</h3>
       <p className="text-sm text-muted-foreground">{o.organisation}</p>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        <span>📍 {o.location}</span><span>⏳ Closes {o.closingDate}</span>
+        <span className="inline-flex items-center gap-1"><MapPin size={14} />{o.location}</span><span className="inline-flex items-center gap-1"><CalendarDays size={14} />Closes {o.closingDate}</span>
       </div>
-    </Link>
+      <Button asChild variant="outline" className="mt-5 w-full"><Link to="/opportunities/$id" params={{ id: o.id }}>View Details <ArrowRight /></Link></Button>
+    </article>
   );
 }
 
 export function RequireRole({ role, children }: { role: Role; children: ReactNode }) {
   const user = useCurrentUser();
-  const navigate = useNavigate();
-  useEffect(() => {
-    const t = setTimeout(() => { if (!user) navigate({ to: "/login" }); }, 50);
-    return () => clearTimeout(t);
-  }, [user, navigate]);
+  const db = useDB();
+  if (db.loading) return <div className="p-10 text-center text-muted-foreground" role="status">Loading your account…</div>;
+  if (db.error) return <div className="p-10 text-center"><p role="alert">{db.error}</p><Button onClick={() => refreshData()} className="mt-4">Try again</Button></div>;
   if (!user) return <div className="p-10 text-center text-muted-foreground">Checking access…</div>;
   if (user.role !== role)
     return <div className="mx-auto max-w-md p-10 text-center"><h1 className="text-xl font-bold">Access restricted</h1><p className="mt-2 text-muted-foreground">This area is for {role} accounts only.</p></div>;

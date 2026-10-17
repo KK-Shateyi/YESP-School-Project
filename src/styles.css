@@ -102,3 +102,12 @@
 @utility label {
   display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem;
 }
+
+@media print {
+  header, footer, .print-hidden { display: none !important; }
+  body { background: var(--background); }
+  main > div { display: block; padding: 0; }
+  .cv-print { border: none; padding: 0; }
+  .cv-print section { break-inside: avoid; }
+  @page { size: A4; margin: 18mm; }
+}

@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
 import { actions, dashboardPath, useCurrentUser } from "@/lib/store";
 
 export function Logo() {
@@ -14,10 +16,11 @@ export function Logo() {
 export function SiteHeader() {
   const user = useCurrentUser();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const link = "text-sm font-medium text-ink-foreground/80 hover:text-primary";
   const active = { className: "text-primary" };
-  const logout = () => { actions.logout(); setOpen(false); navigate({ to: "/", replace: true }); };
+  const logout = async () => { await queryClient.cancelQueries(); queryClient.clear(); await actions.logout(); setOpen(false); await navigate({ to: "/auth", replace: true }); };
 
   const nav = (
     <>
@@ -28,7 +31,7 @@ export function SiteHeader() {
         <>
           <Link to={dashboardPath(user.role)} className={link} activeProps={active} onClick={() => setOpen(false)}>Dashboard</Link>
           <span className="text-xs text-ink-foreground/80">{user.name} · {user.role}</span>
-          <button onClick={logout} className="btn btn-gold !py-1.5">Logout</button>
+          <Button onClick={logout}>Logout</Button>
         </>
       ) : (
         <>
@@ -67,7 +70,6 @@ export function SiteFooter() {
         <div className="text-sm text-ink-foreground/80">
           <p>{"\n"}</p>
           <p className="mt-1">All organisations and listings are demonstration data.</p>
-          <button onClick={() => { if (confirm("Reset all demo data?")) actions.reset(); }} className="mt-3 text-xs text-primary underline">Reset demo data</button>
         </div>
       </div>
       <p className="border-t border-ink-foreground/10 py-4 text-center text-xs text-ink-foreground/70">© 2026 ILS2B YESP – Youth Employment & Skills Portal</p>

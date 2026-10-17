@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { actions, dashboardPath } from "@/lib/store";
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -14,20 +15,17 @@ export const Route = createFileRoute("/login")({
   component: Login,
 });
 
-const demo: [string, string, string][] = [
-  ["Youth", "thabo@demo.co.za", "youth123"],
-  ["Employer", "employer@techhub.co.za", "employer123"],
-  ["Admin", "admin@yesp.co.za", "admin123"],
-];
-
-function Login() {
+export function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBusy(true);setError('');
     const r = await actions.login(email, password);
+    setBusy(false);
     if (typeof r === "string") return setError(r);
     navigate({ to: dashboardPath(r.role) });
   };
@@ -35,22 +33,13 @@ function Login() {
     <div className="mx-auto max-w-md px-4 py-12">
       <form onSubmit={submit} className="card space-y-4 p-6">
         <h1 className="text-2xl font-extrabold">Login</h1>
-        <div><label className="label">Email</label><input className="field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-        <div><label className="label">Password</label><input className="field" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+        <div><label htmlFor="login-email" className="label">Email</label><input id="login-email" autoComplete="email" className="field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+        <div><label htmlFor="login-password" className="label">Password</label><input id="login-password" autoComplete="current-password" className="field" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+        <Link to="/forgot-password" className="block text-sm font-semibold text-gold-deep">Forgot Password?</Link>
         {error && <p className="text-sm text-destructive">{error}</p>}
-        <button className="btn btn-gold w-full">Login</button>
+        <Button disabled={busy} className="w-full">{busy ? 'Signing in…' : 'Login'}</Button>
         <p className="text-center text-sm text-muted-foreground">No account? <Link to="/register" className="font-semibold text-gold-deep">Register</Link></p>
       </form>
-      <div className="mt-6 rounded-xl border border-dashed p-4">
-        <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">Demo accounts (tap to fill)</p>
-        <div className="grid gap-2">
-          {demo.map(([r, e, p]) => (
-            <button key={r} type="button" onClick={() => { setEmail(e); setPassword(p); setError(""); }} className="flex justify-between rounded-md bg-muted px-3 py-2 text-left text-sm hover:bg-gold-soft">
-              <span className="font-semibold">{r}</span><span className="text-muted-foreground">{e}</span>
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

@@ -18,6 +18,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCvRouteImport } from './routes/_authenticated/cv'
 import { Route as AuthenticatedEmployerRouteImport } from './routes/_authenticated/employer'
 import { Route as AuthenticatedYouthRouteImport } from './routes/_authenticated/youth'
 import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
@@ -67,6 +68,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCvRoute = AuthenticatedCvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEmployerRoute = AuthenticatedEmployerRouteImport.update({
   id: '/employer',
   path: '/employer',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/cv': typeof AuthenticatedCvRoute
   '/employer': typeof AuthenticatedEmployerRoute
   '/youth': typeof AuthenticatedYouthRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/cv': typeof AuthenticatedCvRoute
   '/employer': typeof AuthenticatedEmployerRoute
   '/youth': typeof AuthenticatedYouthRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/cv': typeof AuthenticatedCvRoute
   '/_authenticated/employer': typeof AuthenticatedEmployerRoute
   '/_authenticated/youth': typeof AuthenticatedYouthRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/admin'
+    | '/cv'
     | '/employer'
     | '/youth'
     | '/opportunities/$id'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/admin'
+    | '/cv'
     | '/employer'
     | '/youth'
     | '/opportunities/$id'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/_authenticated/admin'
+    | '/_authenticated/cv'
     | '/_authenticated/employer'
     | '/_authenticated/youth'
     | '/opportunities/$id'
@@ -256,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/cv': {
+      id: '/_authenticated/cv'
+      path: '/cv'
+      fullPath: '/cv'
+      preLoaderRoute: typeof AuthenticatedCvRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/employer': {
       id: '/_authenticated/employer'
       path: '/employer'
@@ -289,12 +308,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedCvRoute: typeof AuthenticatedCvRoute
   AuthenticatedEmployerRoute: typeof AuthenticatedEmployerRoute
   AuthenticatedYouthRoute: typeof AuthenticatedYouthRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedCvRoute: AuthenticatedCvRoute,
   AuthenticatedEmployerRoute: AuthenticatedEmployerRoute,
   AuthenticatedYouthRoute: AuthenticatedYouthRoute,
 }

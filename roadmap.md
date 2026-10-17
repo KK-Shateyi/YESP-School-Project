@@ -1,4 +1,5 @@
 # YESP UAT improvements
+- [ ] Continue unfinished UAT work and repair account page errors.
 - [ ] Secure Cloud accounts, private profiles/CVs and honest password recovery.
 - [ ] Preserve sample listings and browser-only legacy data without trusting legacy roles.
 - [ ] Improve search, recommendations and explicit details links.

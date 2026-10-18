@@ -11,6 +11,7 @@
 
 - Cloud Auth and public.user_roles are authoritative; browser legacy demo records must never authorize access.
 - Initialize account data and subscribe to identity changes once in the root; cancel and clear query caches before sign-out.
+- Serialize account refreshes so login and identity-change notifications cannot invalidate each other's results.
 - Public listings use a public server function for SSR, while account writes and private CV reads use the generated browser client with owner-scoped RLS.
 - Keep matching and validation as pure shared helpers so recommendation and form rules can be tested independently.
 - Save CVs as structured contact and career fields in the existing owner-scoped cvs table; printing uses a dedicated print-only preview.

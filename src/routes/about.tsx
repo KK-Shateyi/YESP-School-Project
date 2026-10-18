@@ -8,6 +8,8 @@ export const Route = createFileRoute("/about")({
       { name: "description", content: "How YESP connects South African youth, employers, training providers and administrators." },
       { property: "og:title", content: "About YESP" },
       { property: "og:description", content: "How YESP connects youth with verified opportunities." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: About,

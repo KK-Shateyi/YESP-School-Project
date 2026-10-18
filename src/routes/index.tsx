@@ -9,6 +9,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Find jobs, internships, learnerships and skills training for South African youth." },
       { property: "og:title", content: "YESP – Youth Employment & Skills Portal" },
       { property: "og:description", content: "Bridging youth employment through skills development." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,

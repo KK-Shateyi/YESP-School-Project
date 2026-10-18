@@ -10,6 +10,8 @@ export const Route = createFileRoute("/login")({
       { name: "description", content: "Sign in to YESP as a youth, employer or administrator." },
       { property: "og:title", content: "Login – YESP" },
       { property: "og:description", content: "Sign in to your YESP account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Login,

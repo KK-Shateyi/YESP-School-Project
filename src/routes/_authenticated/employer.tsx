@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader, RequireRole, StatusBadge, TypeTag } from "@/components/ui-bits";
 import { actions, CATEGORIES, LOCATIONS, OPP_TYPES, useCurrentUser, useDB, type OppType } from "@/lib/store";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/employer")({
   head: () => ({
@@ -10,21 +11,26 @@ export const Route = createFileRoute("/_authenticated/employer")({
       { name: "description", content: "Create opportunities and track their approval status on YESP." },
       { property: "og:title", content: "Employer Dashboard – YESP" },
       { property: "og:description", content: "Post opportunities for South African youth." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: () => <RequireRole role="employer"><Employer /></RequireRole>,
 });
 
 function Employer() {
-  const user = useCurrentUser()!;
+  const user = useCurrentUser();
   const db = useDB();
-  const mine = db.opps.filter((o) => o.employerId === user.id);
-  const blank = { organisation: user.organisation ?? "", title: "", type: "Internship" as OppType, location: "Johannesburg", category: "ICT", description: "", requirements: "", closingDate: "" };
+  const mine = db.opps.filter((o) => o.employerId === user?.id);
+  const blank = { organisation: user?.organisation ?? "", title: "", type: "Internship" as OppType, location: "Johannesburg", category: "ICT", description: "", requirements: "", closingDate: "" };
   const [f, setF] = useState(blank);
   const [show, setShow] = useState(false);
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
   const count = (s: string | undefined) => mine.filter((o) => o.status === s).length;
+  if (!user) return null;
 
   return (
     <>
@@ -41,7 +47,7 @@ function Employer() {
         {done && <div className="rounded-lg border border-primary bg-gold-soft p-4 text-sm"><b>Submitted for approval.</b> Status is now <StatusBadge status="pending" />. It will be visible to youth once an administrator approves it.</div>}
 
         {show && (
-          <form className="card space-y-4 p-6" onSubmit={(e) => { e.preventDefault(); actions.createOpp({ ...f, employerId: user.id }); setF(blank); setShow(false); setDone(true); }}>
+          <form className="card space-y-4 p-6" onSubmit={async (e) => { e.preventDefault(); setBusy(true); setError(""); try { await actions.createOpp({ ...f, employerId: user.id }); setF(blank); setShow(false); setDone(true); } catch (err) { setError(err instanceof Error ? err.message : "Unable to submit this opportunity."); } finally { setBusy(false); } }}>
             <h2 className="text-xl font-bold">Create opportunity</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div><label className="label">Organisation name</label><input className="field" required value={f.organisation} onChange={set("organisation")} /></div>
@@ -54,12 +60,13 @@ function Employer() {
             <div><label className="label">Description</label><textarea className="field min-h-24" required value={f.description} onChange={set("description")} /></div>
             <div><label className="label">Requirements (one per line)</label><textarea className="field min-h-24" required value={f.requirements} onChange={set("requirements")} /></div>
             <div className="flex flex-wrap gap-3">
-              <button className="btn btn-gold">Submit for approval</button>
+              <Button disabled={busy}>{busy ? "Submitting…" : "Submit for approval"}</Button>
               <button type="button" className="btn btn-outline" onClick={() => setShow(false)}>Cancel</button>
               <button type="button" className="btn btn-outline ml-auto text-xs" onClick={() => setF({ ...f, title: "Junior Web Developer Internship", type: "Internship", category: "ICT", location: "Johannesburg", closingDate: "2026-12-15",
                 description: "12-month paid internship building websites and web apps with our development team using HTML, CSS, JavaScript and React.",
                 requirements: "Diploma or degree in IT / Computer Science\nBasic HTML, CSS and JavaScript\nAged 18–35\nEager to learn" })}>Fill demo data</button>
             </div>
+            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           </form>
         )}
 
@@ -72,6 +79,7 @@ function Employer() {
                   <div className="min-w-0">
                     <Link to="/opportunities/$id" params={{ id: o.id }} className="block truncate font-semibold hover:text-gold-deep">{o.title}</Link>
                     <p className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground"><TypeTag type={o.type} /> {o.location} · Submitted {o.createdAt}</p>
+                    {o.status === "rejected" && <p className="mt-2 text-sm text-destructive">{o.rejectionReason}</p>}
                   </div>
                   <StatusBadge status={o.status} />
                 </li>

@@ -10,6 +10,8 @@ export const Route = createFileRoute("/opportunities/")({
       { name: "description", content: "Search approved jobs, internships, learnerships and training across South Africa." },
       { property: "og:title", content: "Opportunities – YESP" },
       { property: "og:description", content: "Search and filter youth opportunities in South Africa." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Opportunities,

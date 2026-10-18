@@ -9,6 +9,8 @@ export const Route = createFileRoute("/opportunities/$id")({
       { name: "description", content: "View requirements, closing date and apply for this opportunity on YESP." },
       { property: "og:title", content: "Opportunity details – YESP" },
       { property: "og:description", content: "View and apply for this youth opportunity." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Detail,

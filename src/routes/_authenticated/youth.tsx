@@ -13,6 +13,8 @@ export const Route = createFileRoute("/_authenticated/youth")({
       { name: "description", content: "Manage your YESP profile and track your applications." },
       { property: "og:title", content: "Youth Dashboard – YESP" },
       { property: "og:description", content: "Your profile and applications on YESP." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: () => <RequireRole role="youth"><Youth /></RequireRole>,

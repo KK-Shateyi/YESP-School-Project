@@ -25,7 +25,12 @@ const listeners = new Set<() => void>();
 function emit(next: Partial<DB>) { state = {...state,...next}; listeners.forEach(l=>l()); }
 export function useDB() { return useSyncExternalStore(l=>{listeners.add(l);return ()=>listeners.delete(l);},()=>state,()=>empty); }
 export function useCurrentUser() { const db=useDB();return db.users.find(u=>u.id===db.sessionId) ?? null; }
-export async function refreshData() {
+let refreshQueue: Promise<void> = Promise.resolve();
+export function refreshData() {
+  refreshQueue = refreshQueue.then(loadAccountData, loadAccountData);
+  return refreshQueue;
+}
+async function loadAccountData() {
   const current = ++revision;
   try {
     const {data:{user},error:authError}=await supabase.auth.getUser();

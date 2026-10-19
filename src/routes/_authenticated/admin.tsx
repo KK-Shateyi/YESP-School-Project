@@ -56,11 +56,12 @@ function Admin() {
             {list.length === 0 ? <p className="p-2 text-sm text-muted-foreground">Nothing here.</p> : (
               <ul className="space-y-1">
                 {list.map((o) => (
-                  <li key={o.id}>
-                     <Button variant="ghost" disabled={busy} onClick={() => select(o.id)} className={`h-auto block w-full rounded-lg p-3 text-left hover:bg-muted ${openId === o.id ? "bg-gold-soft" : ""}`}>
-                      <div className="flex items-center justify-between gap-2"><span className="truncate font-semibold">{o.title}</span><StatusBadge status={o.status} /></div>
-                      <p className="text-xs text-muted-foreground">{o.organisation} · {o.createdAt}</p>
-                     </Button>
+                  <li key={o.id} className="flex items-stretch gap-1">
+                      <Button variant="ghost" disabled={busy} onClick={() => select(o.id)} className={`h-auto block w-full rounded-lg p-3 text-left hover:bg-muted ${openId === o.id ? "bg-gold-soft" : ""}`}>
+                        <div className="flex items-center justify-between gap-2"><span className="truncate font-semibold">{o.title}</span><StatusBadge status={o.status} /></div>
+                        <p className="text-xs text-muted-foreground">{o.organisation} · {o.createdAt}</p>
+                      </Button>
+                      <Button variant="outline" disabled={busy} onClick={() => select(o.id)} aria-label={`View ${o.title}`} className="shrink-0 self-center px-3 py-2 text-sm font-semibold">View</Button>
                   </li>
                 ))}
               </ul>

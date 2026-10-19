@@ -1,4 +1,5 @@
 # YESP UAT improvements
+- [ ] Restore visible synthetic demo credentials and verify all role logins and administrator listing access.
 - [x] Restore persistent synthetic admin, youth, employer accounts and sample listings; verify admin approval/rejection and refresh.
 - [ ] Continue unfinished UAT work and repair account page errors.
 - [ ] Secure Cloud accounts, private profiles/CVs and honest password recovery.

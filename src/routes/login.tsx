@@ -42,6 +42,32 @@ export function Login() {
         <Button disabled={busy} className="w-full">{busy ? 'Signing in…' : 'Login'}</Button>
         <p className="text-center text-sm text-muted-foreground">No account? <Link to="/register" className="font-semibold text-gold-deep">Register</Link></p>
       </form>
+      <section aria-labelledby="demo-accounts-title" className="mt-8 space-y-4">
+        <div>
+          <h2 id="demo-accounts-title" className="text-xl font-bold">Demo login accounts</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Public test accounts with synthetic data only. Do not enter personal information.</p>
+        </div>
+        {[
+          { role: 'Administrator', email: 'admin@yesp.co.za', password: 'YESP-Admin-Demo-2026!' },
+          { role: 'Youth', email: 'thabo@demo.co.za', password: 'YESP-Youth-Demo-2026!' },
+          { role: 'Employer', email: 'employer@techhub.co.za', password: 'YESP-Employer-Demo-2026!' },
+          { role: 'Training Provider', email: 'training@ubuntu.co.za', password: 'YESP-Employer-Demo-2026!' },
+        ].map((account) => (
+          <article key={account.email} className="card space-y-3 p-4">
+            <h3 className="font-bold">{account.role}</h3>
+            <dl className="space-y-2 text-sm">
+              <div><dt className="font-semibold">Email</dt><dd className="break-all select-all">{account.email}</dd></div>
+              <div><dt className="font-semibold">Password</dt><dd className="break-all font-mono select-all">{account.password}</dd></div>
+            </dl>
+            <Button type="button" variant="outline" disabled={busy} className="w-full" onClick={() => {
+              setEmail(account.email);
+              setPassword(account.password);
+              setError('');
+              document.getElementById('login-email')?.focus();
+            }}>Use {account.role} account</Button>
+          </article>
+        ))}
+      </section>
     </div>
   );
 }
